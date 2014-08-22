@@ -3,6 +3,7 @@ var gulp = require("gulp");
 var fs = require("fs-extra");
 var remove = require("remove");
 var glob = require("glob");
+var archiver = require("archiver");
 var Handlebars = require("handlebars");
 
 // Default performs a clean build
@@ -13,10 +14,15 @@ gulp.task("clean", function() {
 	if (fs.existsSync("build")) {
 		remove.removeSync("build");
 	}
+
+	if (fs.existsSync("target")) {
+		remove.removeSync("target");
+	}
 });
 
 // Setup the build directory structure
 gulp.task("prepare", ["clean"], function() {
+	fs.mkdirSync("target");
 	fs.mkdirSync("build");
 	["META-INF", "css", "js", "html", "images"].forEach(function(path) {
 		fs.mkdirSync("build/" + path);
@@ -59,6 +65,15 @@ gulp.task("build", ["prepare"], function() {
 			Handlebars.compile(fs.readFileSync("src/templates/" + template.template).toString())(template.data));
 	});
 
+	// Write the contents of the build directory into the EPUB file
 	// TODO: Zip the build directory into an EPUB .zip file and place in the build directory
+	var epub = archiver("zip");
+	epub.pipe(fs.createWriteStream("target/problem.epub"));
+	epub.bulk([{
+		expand: true,
+		cwd: "build",
+		src: ["build/mimetype", "**"]
+	}]);
+	epub.finalize();
 });
 
