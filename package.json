@@ -1,0 +1,23 @@
+{
+  "name": "EPUB-Problems",
+  "version": "0.0.0",
+  "description": "",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bibliolabs/EPUB-Problems.git"
+  },
+  "author": "Glenn Nelson <glenn@hexcoder.us> (http://hexcoder.us/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bibliolabs/EPUB-Problems/issues"
+  },
+  "homepage": "https://github.com/bibliolabs/EPUB-Problems",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.8.7"
+  }
+}
