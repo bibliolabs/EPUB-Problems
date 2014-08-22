@@ -52,14 +52,13 @@ gulp.task("build", ["prepare"], function() {
 	};
 
 	// Compile and write the template files into the build directory
-    [{ target: "META-INF/container.xml", template: "container.xml.hb", data: {} },
-	 { target: "mimetype", template: "mimetype.hb", data: {} },
-	 { target: "package.opf", template: "package.opf.hb", data: packageData }].forEach(function(template) {
+    [{ target: "META-INF/container.xml", template: "container.xml.handlebars", data: {} },
+	 { target: "mimetype", template: "mimetype.handlebars", data: {} },
+	 { target: "package.opf", template: "package.opf.handlebars", data: packageData }].forEach(function(template) {
 		fs.writeFileSync("build/" + template.target, 
 			Handlebars.compile(fs.readFileSync("src/templates/" + template.template).toString())(template.data));
 	});
 
-	// TODO: Complete `container.xml` and `package.opf` templates
 	// TODO: Zip the build directory into an EPUB .zip file and place in the build directory
 });
 
