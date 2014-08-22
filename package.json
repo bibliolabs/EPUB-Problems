@@ -16,7 +16,12 @@
     "url": "https://github.com/bibliolabs/EPUB-Problems/issues"
   },
   "homepage": "https://github.com/bibliolabs/EPUB-Problems",
-  "dependencies": {},
+  "dependencies": {
+  	"handlebars": "^2.0.0-alpha.4",
+	"remove": "0.1.5",
+	"glob": "4.0.5",
+	"fs-extra": "0.11.0"
+  },
   "devDependencies": {
     "gulp": "^3.8.7"
   }
