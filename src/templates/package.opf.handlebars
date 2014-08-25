@@ -14,23 +14,23 @@
     <!--List all files in the ePub-->
     <item id="nav" properties="nav" href="xhtml/toc.xhtml" media-type="application/xhtml+xml"/>
 	{{#each css}}
-	<item id="css_{{this}}" href="{{this}}" media-type="text/css" />
+	<item id="{{this.id}}" href="{{this.path}}" media-type="text/css" />
 	{{/each}}
 	{{#each js}}
-	<item id="js_{{this}}" href="{{this}}" media-type="application/javascript" />
+	<item id="{{this.id}}" href="{{this.path}}" media-type="application/javascript" />
 	{{/each}}
 	{{#each images}}
-	<item id="image_{{this}}" href="{{this}}" media-type="image/png" />
+	<item id="{{this.id}}" href="{{this.path}}" media-type="image/png" />
 	{{/each}}
 	{{#each xhtml}}
-	<item id="xhtml_{{this}}" href="{{this}}" media-type="application/xhtml+xml" />
+	<item id="{{this.id}}" href="{{this.path}}" media-type="application/xhtml+xml" />
 	{{/each}}
   </manifest>
   <spine>
     <!--Reference all spine items in the ePub-->
     <itemref idref="nav" linear="no"/>
   	{{#each xhtml}}
-	<itemref idref="xhtml_{{this}}" linear="yes" />
+	<itemref idref="{{this.id}}" linear="yes" />
 	{{/each}}
   </spine>
 </package>

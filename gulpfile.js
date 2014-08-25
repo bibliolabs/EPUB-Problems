@@ -4,6 +4,7 @@ var fs = require("fs-extra");
 var remove = require("remove");
 var glob = require("glob");
 var archiver = require("archiver");
+var uuid = require("node-uuid");
 var Handlebars = require("handlebars");
 
 // Configurations
@@ -63,12 +64,18 @@ gulp.task("build", ["prepare"], function() {
 	var images = glob.sync(config.src.images + "**/*").map(trim(config.source)).map(copy());
 	var xhtml = glob.sync(config.src.xhtml + "**/*").map(trim(config.source)).map(copy());
 	
+	var mapper = function(path) {
+		return {
+			id: uuid.v4(),
+			path: path
+		};
+	};
 	var packageData = {
-		css: css,
-		js: js,
-		images: images,
+		css: css.map(mapper),
+		js: js.map(mapper),
+		images: images.map(mapper),
 		// Ensure ordering of spine items based on filename
-		xhtml: xhtml.sort()
+		xhtml: xhtml.sort().map(mapper)
 	};
 
 	// Compile and write the template files into the build directory
@@ -87,7 +94,7 @@ gulp.task("build", ["prepare"], function() {
 	epub.bulk([{
 		expand: true,
 		cwd: "build",
-		src: ["build/mimetype", "**"]
+		src: ["mimetype", "**/*"]
 	}]);
 	epub.finalize();
 });
