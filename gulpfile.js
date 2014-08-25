@@ -66,7 +66,7 @@ gulp.task("build", ["prepare"], function() {
 	
 	var mapper = function(path) {
 		return {
-			id: uuid.v4(),
+			id: "id_" + uuid.v4(),
 			path: path
 		};
 	};
@@ -92,6 +92,7 @@ gulp.task("build", ["prepare"], function() {
 	var epub = archiver("zip");
 	epub.pipe(fs.createWriteStream(config.target + "problem.epub"));
 	epub.bulk([{
+		store: true,
 		expand: true,
 		cwd: "build",
 		src: ["mimetype", "**/*"]
