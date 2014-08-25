@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <head>
+      <title>Table of Contents</title>
+   </head>
+   <body>
+      <section epub:type="frontmatter toc">
+         <header>
+            <h1>Table of Contents</h1>
+         </header>
+         <nav epub:type="toc" id="toc">
+            <ol>
+				{{#each xhtml}}
+				<li><a href="{{this}}">{{this}}</a></li>
+				{{/each}}
+            </ol>
+         </nav>
+      </section>
+   </body>
+</html>

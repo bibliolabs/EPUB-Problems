@@ -74,9 +74,10 @@ gulp.task("build", ["prepare"], function() {
 	// Compile and write the template files into the build directory
     [{ target: "META-INF/container.xml", template: "container.xml.handlebars", data: {} },
 	 { target: "mimetype", template: "mimetype.handlebars", data: {} },
-	 { target: "package.opf", template: "package.opf.handlebars", data: packageData }].forEach(function(template) {
+	 { target: "package.opf", template: "package.opf.handlebars", data: packageData },
+	 { target: "xhtml/toc.xhtml", template: "toc.xhtml.handlebars", data: packageData }].forEach(function(template) {
 		fs.writeFileSync(config.build + template.target, 
-			Handlebars.compile(fs.readFileSync(config.src.templates + template.template).toString())(template.data));
+		Handlebars.compile(fs.readFileSync(config.src.templates + template.template).toString())(template.data));
 	});
 
 	// Write the contents of the build directory into the EPUB file

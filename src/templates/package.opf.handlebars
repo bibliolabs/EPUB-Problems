@@ -12,8 +12,7 @@
   </metadata>
   <manifest>
     <!--List all files in the ePub-->
-	<!-- TODO: Create ToC -->
-    <!-- <item id="nav" properties="nav" href="html/toc.xhtml" media-type="application/xhtml+xml"/> -->
+    <item id="nav" properties="nav" href="xhtml/toc.xhtml" media-type="application/xhtml+xml"/>
 	{{#each css}}
 	<item id="css_{{this}}" href="{{this}}" media-type="text/css" />
 	{{/each}}
@@ -29,10 +28,8 @@
   </manifest>
   <spine>
     <!--Reference all spine items in the ePub-->
-	<!-- TODO: Add ToC reference -->
-    <!-- <itemref idref="nav" linear="no"/> -->
-  
-  	{{#each html}}
+    <itemref idref="nav" linear="no"/>
+  	{{#each xhtml}}
 	<itemref idref="xhtml_{{this}}" linear="yes" />
 	{{/each}}
   </spine>
