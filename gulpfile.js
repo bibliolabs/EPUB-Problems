@@ -6,33 +6,40 @@ var glob = require("glob");
 var archiver = require("archiver");
 var Handlebars = require("handlebars");
 
+// Configurations
+var config = {
+	source: "./src/",
+	build: "./build/",
+	target: "./target/"
+};
+
 // Default performs a clean build
 gulp.task("default", ["clean", "build"], function() {});
 
 // Remove all build related files
 gulp.task("clean", function() {
-	if (fs.existsSync("build")) {
-		remove.removeSync("build");
+	if (fs.existsSync(config.build)) {
+		remove.removeSync(config.build);
 	}
 
-	if (fs.existsSync("target")) {
-		remove.removeSync("target");
+	if (fs.existsSync(config.target)) {
+		remove.removeSync(config.target);
 	}
 });
 
 // Setup the build directory structure
 gulp.task("prepare", ["clean"], function() {
-	fs.mkdirSync("target");
-	fs.mkdirSync("build");
+	fs.mkdirSync(config.target);
+	fs.mkdirSync(config.build);
 	["META-INF", "css", "js", "html", "images"].forEach(function(path) {
-		fs.mkdirSync("build/" + path);
+		fs.mkdirSync(config.build + path);
 	});
 });
 
 gulp.task("build", ["prepare"], function() {
 	var copy = function(prefix) {
 		return function(path) {
-			fs.copySync(path, "build/" + path.slice(prefix.length));
+			fs.copySync(path, config.build + path.slice(prefix.length));
 		
 			return path;
 		};
@@ -61,14 +68,14 @@ gulp.task("build", ["prepare"], function() {
     [{ target: "META-INF/container.xml", template: "container.xml.handlebars", data: {} },
 	 { target: "mimetype", template: "mimetype.handlebars", data: {} },
 	 { target: "package.opf", template: "package.opf.handlebars", data: packageData }].forEach(function(template) {
-		fs.writeFileSync("build/" + template.target, 
+		fs.writeFileSync(config.build + template.target, 
 			Handlebars.compile(fs.readFileSync("src/templates/" + template.template).toString())(template.data));
 	});
 
 	// Write the contents of the build directory into the EPUB file
 	// TODO: Zip the build directory into an EPUB .zip file and place in the build directory
 	var epub = archiver("zip");
-	epub.pipe(fs.createWriteStream("target/problem.epub"));
+	epub.pipe(fs.createWriteStream(config.target + "problem.epub"));
 	epub.bulk([{
 		expand: true,
 		cwd: "build",
