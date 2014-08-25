@@ -3,6 +3,7 @@ var gulp = require("gulp");
 var fs = require("fs-extra");
 var remove = require("remove");
 var glob = require("glob");
+var zlib = require("zlib");
 var archiver = require("archiver");
 var uuid = require("node-uuid");
 var Handlebars = require("handlebars");
@@ -59,10 +60,10 @@ gulp.task("build", ["prepare"], function() {
 	};
 
 	// Move the EPUB source files into the build directory
-	var css = glob.sync(config.src.css +  "**/*").map(trim(config.source)).map(copy());
-	var js = glob.sync(config.src.js + "**/*").map(trim(config.source)).map(copy());
-	var images = glob.sync(config.src.images + "**/*").map(trim(config.source)).map(copy());
-	var xhtml = glob.sync(config.src.xhtml + "**/*").map(trim(config.source)).map(copy());
+	var css = glob.sync(config.src.css +  "**/*.css").map(trim(config.source)).map(copy());
+	var js = glob.sync(config.src.js + "**/*.js").map(trim(config.source)).map(copy());
+	var images = glob.sync(config.src.images + "**/*.*").map(trim(config.source)).map(copy());
+	var xhtml = glob.sync(config.src.xhtml + "**/*.xhtml").map(trim(config.source)).map(copy());
 	
 	var mapper = function(path) {
 		return {
@@ -77,22 +78,23 @@ gulp.task("build", ["prepare"], function() {
 		// Ensure ordering of spine items based on filename
 		xhtml: xhtml.sort().map(mapper)
 	};
-
+	var tableData = {
+		xhtml: xhtml.sort().map(trim("xhtml/")).map(mapper)
+	};
+	
 	// Compile and write the template files into the build directory
     [{ target: "META-INF/container.xml", template: "container.xml.handlebars", data: {} },
 	 { target: "mimetype", template: "mimetype.handlebars", data: {} },
 	 { target: "package.opf", template: "package.opf.handlebars", data: packageData },
-	 { target: "xhtml/toc.xhtml", template: "toc.xhtml.handlebars", data: packageData }].forEach(function(template) {
+	 { target: "xhtml/toc.xhtml", template: "toc.xhtml.handlebars", data: tableData }].forEach(function(template) {
 		fs.writeFileSync(config.build + template.target, 
 		Handlebars.compile(fs.readFileSync(config.src.templates + template.template).toString())(template.data));
 	});
 
 	// Write the contents of the build directory into the EPUB file
-	// TODO: Zip the build directory into an EPUB .zip file and place in the build directory
-	var epub = archiver("zip");
+	var epub = archiver("zip", { zlib: { level: zlib.Z_NO_COMPRESSION } });
 	epub.pipe(fs.createWriteStream(config.target + "problem.epub"));
 	epub.bulk([{
-		store: true,
 		expand: true,
 		cwd: "build",
 		src: ["mimetype", "**/*"]
