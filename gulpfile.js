@@ -44,16 +44,16 @@ gulp.task("prepare", ["clean"], function() {
 });
 
 gulp.task("build", ["prepare"], function() {
-	var copy = function(prefix) {
+	var copy = function() {
 		return function(path) {
-			fs.copySync(path, config.build + path.slice(prefix.length));
+			fs.copySync(config.source + path, config.build + path);
 		
 			return path;
 		};
 	};
 	var trim = function(prefix) {
 		return function(path) {
-			return path.trim(prefix.length);
+			return path.slice(prefix.length);
 		};
 	};
 
