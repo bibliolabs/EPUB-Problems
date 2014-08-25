@@ -10,7 +10,14 @@ var Handlebars = require("handlebars");
 var config = {
 	source: "./src/",
 	build: "./build/",
-	target: "./target/"
+	target: "./target/",
+	src: {
+		xhtml: "./src/xhtml/",
+		css: "./src/css/",
+		js: "./src/js/",
+		images: "./src/images/",
+		templates: "./src/templates/"
+	}
 };
 
 // Default performs a clean build
@@ -31,7 +38,7 @@ gulp.task("clean", function() {
 gulp.task("prepare", ["clean"], function() {
 	fs.mkdirSync(config.target);
 	fs.mkdirSync(config.build);
-	["META-INF", "css", "js", "html", "images"].forEach(function(path) {
+	["META-INF", "css", "js", "xhtml", "images"].forEach(function(path) {
 		fs.mkdirSync(config.build + path);
 	});
 });
@@ -51,17 +58,17 @@ gulp.task("build", ["prepare"], function() {
 	};
 
 	// Move the EPUB source files into the build directory
-	var css = glob.sync("src/css/**/*").map(trim("src/")).map(copy());
-	var js = glob.sync("src/js/**/*").map(trim("src/")).map(copy());
-	var images = glob.sync("src/images/**/*").map(trim("src/")).map(copy());
-	var html = glob.sync("src/html/**/*").map(trim("src/")).map(copy());
+	var css = glob.sync(config.src.css +  "**/*").map(trim(config.source)).map(copy());
+	var js = glob.sync(config.src.js + "**/*").map(trim(config.source)).map(copy());
+	var images = glob.sync(config.src.images + "**/*").map(trim(config.source)).map(copy());
+	var xhtml = glob.sync(config.src.xhtml + "**/*").map(trim(config.source)).map(copy());
 	
 	var packageData = {
 		css: css,
 		js: js,
 		images: images,
 		// Ensure ordering of spine items based on filename
-		html: html.sort()
+		xhtml: xhtml.sort()
 	};
 
 	// Compile and write the template files into the build directory
@@ -69,7 +76,7 @@ gulp.task("build", ["prepare"], function() {
 	 { target: "mimetype", template: "mimetype.handlebars", data: {} },
 	 { target: "package.opf", template: "package.opf.handlebars", data: packageData }].forEach(function(template) {
 		fs.writeFileSync(config.build + template.target, 
-			Handlebars.compile(fs.readFileSync("src/templates/" + template.template).toString())(template.data));
+			Handlebars.compile(fs.readFileSync(config.src.templates + template.template).toString())(template.data));
 	});
 
 	// Write the contents of the build directory into the EPUB file

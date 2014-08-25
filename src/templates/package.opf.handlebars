@@ -23,8 +23,8 @@
 	{{#each images}}
 	<item id="image_{{this}}" href="{{this}}" media-type="image/png" />
 	{{/each}}
-	{{#each html}}
-	<item id="html_{{this}}" href="{{this}}" media-type="application/xhtml+xml" />
+	{{#each xhtml}}
+	<item id="xhtml_{{this}}" href="{{this}}" media-type="application/xhtml+xml" />
 	{{/each}}
   </manifest>
   <spine>
@@ -33,7 +33,7 @@
     <!-- <itemref idref="nav" linear="no"/> -->
   
   	{{#each html}}
-	<itemref idref="html_{{this}}" linear="yes" />
+	<itemref idref="xhtml_{{this}}" linear="yes" />
 	{{/each}}
   </spine>
 </package>
